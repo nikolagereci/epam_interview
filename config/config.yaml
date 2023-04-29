@@ -1,0 +1,15 @@
+# Server configuration
+server:
+  port: 8080
+  readTimeout: 5s
+  writeTimeout: 10s
+
+# Cassandra configuration
+cassandra:
+  host: "cassandra:9042"
+  keyspace: companies
+
+# JWT configuration
+jwt:
+  secretKey: "my-secret-key"
+  expireTime: 3600 # 1 hour in seconds

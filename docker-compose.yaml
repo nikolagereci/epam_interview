@@ -1,0 +1,35 @@
+services:
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    volumes:
+      - ./cassandra:/var/lib/cassandra
+    healthcheck:
+      test: [ "CMD-SHELL", "cqlsh -e 'SELECT cluster_name FROM system.local'" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+  cassandra-load-keyspace:
+    container_name: cassandra-load-keyspace
+    image: cassandra:latest
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    volumes:
+      - ./db/database.cql:/database.cql
+    command: /bin/bash -c "echo loading cassandra keyspace && cqlsh cassandra -f /database.cql"
+  app:
+    image: alpine:3.14
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ["./bin/app"]
+    depends_on:
+      cassandra:
+        condition: service_healthy
+      cassandra-load-keyspace:
+        condition: service_completed_successfully
