@@ -26,7 +26,7 @@ func TestController_CreateCompany(t *testing.T) {
 	// Test case: Successful creation
 	newCompany := &model.Company{Name: "Test Company", Employees: 100, Type: model.Corporation}
 	expectedCompany := &model.Company{Name: "Test Company", ID: uuid.New(), Type: model.Corporation}
-	mockService.EXPECT().CreateCompany(gomock.Any(), newCompany).Return(expectedCompany, nil)
+	mockService.EXPECT().CreateCompany(newCompany).Return(expectedCompany, nil)
 	// Create a test user
 	requestBody, _ := json.Marshal(newCompany)
 	w := httptest.NewRecorder()
@@ -49,7 +49,7 @@ func TestController_CreateCompany_InternalError(t *testing.T) {
 
 	newCompany := &model.Company{Name: "Test Company", Employees: 100, Type: model.Corporation}
 	// Test case: Failed creation due to service error
-	mockService.EXPECT().CreateCompany(gomock.Any(), newCompany).Return(nil, errors.New("Test error"))
+	mockService.EXPECT().CreateCompany(newCompany).Return(nil, errors.New("Test error"))
 	requestBody, _ := json.Marshal(newCompany)
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodPost, "/", strings.NewReader(string(requestBody)))
@@ -126,7 +126,7 @@ func TestController_GetCompany(t *testing.T) {
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = r
 	ctx.Params = gin.Params{{Key: "id", Value: companyID.String()}}
-	mockService.EXPECT().GetCompanyByID(ctx.Request.Context(), companyID).Return(dummyCompany, nil)
+	mockService.EXPECT().GetCompanyByID(companyID).Return(dummyCompany, nil)
 	controller.GetCompany(ctx)
 	expectedJsonString, _ := json.Marshal(dummyCompany)
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -147,7 +147,7 @@ func TestController_GetCompany_NotFound(t *testing.T) {
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = r
 	ctx.Params = gin.Params{{Key: "id", Value: companyID.String()}}
-	mockService.EXPECT().GetCompanyByID(ctx.Request.Context(), companyID).Return(nil, nil)
+	mockService.EXPECT().GetCompanyByID(companyID).Return(nil, nil)
 	controller.GetCompany(ctx)
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	assert.Contains(t, w.Body.String(), "company not found")
@@ -167,7 +167,7 @@ func TestController_GetCompany_Error(t *testing.T) {
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = r
 	ctx.Params = gin.Params{{Key: "id", Value: companyID.String()}}
-	mockService.EXPECT().GetCompanyByID(ctx.Request.Context(), companyID).Return(nil, errors.New("something went wrong"))
+	mockService.EXPECT().GetCompanyByID(companyID).Return(nil, errors.New("something went wrong"))
 	controller.GetCompany(ctx)
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 	assert.Contains(t, w.Body.String(), "something went wrong")
@@ -184,7 +184,7 @@ func TestUpdateCompany(t *testing.T) {
 	companyID := uuid.New()
 	newCompany := &model.Company{Name: "Test Company", Employees: 100, Type: model.Corporation}
 	expectedCompany := &model.Company{Name: "Test Company", ID: companyID, Type: model.Corporation}
-	mockService.EXPECT().UpdateCompany(gomock.Any(), companyID, gomock.Any()).Return(&model.Company{ID: companyID, Name: "Test Company", Type: model.Corporation}, nil).Times(1)
+	mockService.EXPECT().UpdateCompany(companyID, gomock.Any()).Return(&model.Company{ID: companyID, Name: "Test Company", Type: model.Corporation}, nil).Times(1)
 	// Create a test user
 	requestBody, _ := json.Marshal(newCompany)
 	w := httptest.NewRecorder()
@@ -235,7 +235,7 @@ func TestUpdateCompany_ServiceError(t *testing.T) {
 	// Test case: Successful update
 	companyID := uuid.New()
 	newCompany := &model.Company{Name: "Test Company", Employees: 100, Type: model.Corporation}
-	mockService.EXPECT().UpdateCompany(gomock.Any(), companyID, gomock.Any()).Return(nil, errors.New("something went wrong")).Times(1)
+	mockService.EXPECT().UpdateCompany(companyID, gomock.Any()).Return(nil, errors.New("something went wrong")).Times(1)
 	// Create a test user
 	requestBody, _ := json.Marshal(newCompany)
 	w := httptest.NewRecorder()
@@ -259,7 +259,7 @@ func TestUpdateCompany_CompanyNotFound(t *testing.T) {
 	// Test case: Successful update
 	companyID := uuid.New()
 	newCompany := &model.Company{Name: "Test Company", Employees: 100, Type: model.Corporation}
-	mockService.EXPECT().UpdateCompany(gomock.Any(), companyID, gomock.Any()).Return(nil, nil).Times(1)
+	mockService.EXPECT().UpdateCompany(companyID, gomock.Any()).Return(nil, nil).Times(1)
 	// Create a test user
 	requestBody, _ := json.Marshal(newCompany)
 	w := httptest.NewRecorder()
@@ -283,7 +283,7 @@ func TestDeleteCompany(t *testing.T) {
 
 	// Test case: Successful update
 	companyID := uuid.New()
-	mockService.EXPECT().DeleteCompany(gomock.Any(), companyID).Return(nil).Times(1)
+	mockService.EXPECT().DeleteCompany(companyID).Return(nil).Times(1)
 	// Create a test user
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodPatch, "/", nil)
@@ -305,7 +305,7 @@ func TestDeleteCompany_ServiceError(t *testing.T) {
 
 	// Test case: Successful update
 	companyID := uuid.New()
-	mockService.EXPECT().DeleteCompany(gomock.Any(), companyID).Return(errors.New("something went wrong")).Times(1)
+	mockService.EXPECT().DeleteCompany(companyID).Return(errors.New("something went wrong")).Times(1)
 	// Create a test user
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest(http.MethodPatch, "/", nil)

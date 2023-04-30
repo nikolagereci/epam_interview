@@ -32,7 +32,7 @@ services:
     ports:
       - "9092:9092"
     healthcheck:
-      test: nc -z localhost 9092 || exit -1
+      test: nc -z localhost 9093 || exit -1
       start_period: 15s
       interval: 5s
       timeout: 10s
@@ -52,11 +52,13 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - .:/app
+      - ./bin:/app
+      - ./config:/app/config
     working_dir: /app
-    command: ["./bin/app"]
+    command: ["./app"]
     environment:
       COMPANY_CASSANDRA_HOST: cassandra:9042
+      COMPANY_BROKER_URL: broker:9092
     depends_on:
       cassandra:
         condition: service_healthy

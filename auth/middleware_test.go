@@ -1,13 +1,12 @@
 package auth
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 )
 
 func TestAuthMiddleware_Authenticate_Success(t *testing.T) {
@@ -133,6 +132,6 @@ func TestAuthMiddleware_Authenticate_InvalidToken(t *testing.T) {
 
 	// Check response body
 	//expectedBody := gin.H{"error": "Failed to parse token: token contains an invalid number of segments"}
-	expectedBody := `{"error":"token contains an invalid number of segments"}`
+	expectedBody := `{"error":"token is malformed: token contains an invalid number of segments"}`
 	assert.JSONEq(t, expectedBody, resp.Body.String())
 }

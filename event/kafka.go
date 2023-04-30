@@ -19,6 +19,7 @@ type kafkaAdapter struct {
 
 // NewKafkaAdapter creates a new KafkaAdapter.
 func NewKafkaAdapter(brokers []string, topic string) (KafkaAdapter, error) {
+	log.Infof("creating kafka adapter with brokers:%v and topic %v", brokers, topic)
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Retry.Max = 10
@@ -37,7 +38,7 @@ func NewKafkaAdapter(brokers []string, topic string) (KafkaAdapter, error) {
 
 func (kp *kafkaAdapter) SendEvent(event *Event) error {
 	message := &sarama.ProducerMessage{
-		Topic: kp.topic, // replace with your topic name
+		Topic: kp.topic,
 		Value: sarama.StringEncoder(event.String()),
 	}
 

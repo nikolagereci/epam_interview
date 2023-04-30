@@ -38,11 +38,6 @@ func main() {
 	companyService := company.NewService(companyRepo, kafkaProducer)
 	companyController := company.NewController(companyService)
 
-	//TODO
-	//eventRepo := event.NewRepository(db)
-	//eventService := event.NewService(eventRepo, kafkaProducer)
-	//eventController := event.NewController(eventService)
-
 	authController := auth.NewAuthController()
 	authMiddleware := auth.NewAuthMiddleware(viper.GetString(env.COMPANY_JWT_SECRET_KEY))
 

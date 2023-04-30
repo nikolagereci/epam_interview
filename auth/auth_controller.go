@@ -2,13 +2,15 @@ package auth
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/ngereci/xm_interview/env"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
 type LoginRequest struct {
@@ -54,9 +56,10 @@ func (a *Controller) Login(c *gin.Context) {
 
 // CreateToken generates a JWT token for the given username
 func (a *Controller) createToken(username string) (string, error) {
+	expiration := time.Duration(rand.Int31n(viper.GetInt32(env.COMPANY_JWT_EXPIRE_TIME))) * time.Second
 	claims := jwt.MapClaims{
 		"username": username,
-		"exp":      viper.GetString(env.COMPANY_JWT_EXPIRE_TIME),
+		"exp":      time.Now().Add(expiration).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

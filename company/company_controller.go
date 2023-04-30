@@ -30,7 +30,7 @@ func (c *controller) CreateCompany(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	createdCompany, err := c.service.CreateCompany(ctx.Request.Context(), &company)
+	createdCompany, err := c.service.CreateCompany(&company)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -44,7 +44,7 @@ func (c *controller) GetCompany(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	company, err := c.service.GetCompanyByID(ctx.Request.Context(), *companyUuid)
+	company, err := c.service.GetCompanyByID(*companyUuid)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -69,7 +69,7 @@ func (c *controller) UpdateCompany(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	updatedCompany, err := c.service.UpdateCompany(ctx.Request.Context(), *companyUuid, &company)
+	updatedCompany, err := c.service.UpdateCompany(*companyUuid, &company)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -89,7 +89,7 @@ func (c *controller) DeleteCompany(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	err = c.service.DeleteCompany(ctx.Request.Context(), *companyUuid)
+	err = c.service.DeleteCompany(*companyUuid)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

@@ -5,7 +5,6 @@
 package mock_company_service
 
 import (
-	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -37,60 +36,60 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 }
 
 // CreateCompany mocks base method.
-func (m *MockService) CreateCompany(ctx context.Context, newCompany *model.Company) (*model.Company, error) {
+func (m *MockService) CreateCompany(newCompany *model.Company) (*model.Company, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateCompany", ctx, newCompany)
+	ret := m.ctrl.Call(m, "CreateCompany", newCompany)
 	ret0, _ := ret[0].(*model.Company)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateCompany indicates an expected call of CreateCompany.
-func (mr *MockServiceMockRecorder) CreateCompany(ctx, newCompany interface{}) *gomock.Call {
+func (mr *MockServiceMockRecorder) CreateCompany(newCompany interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCompany", reflect.TypeOf((*MockService)(nil).CreateCompany), ctx, newCompany)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCompany", reflect.TypeOf((*MockService)(nil).CreateCompany), newCompany)
 }
 
 // DeleteCompany mocks base method.
-func (m *MockService) DeleteCompany(ctx context.Context, id uuid.UUID) error {
+func (m *MockService) DeleteCompany(id uuid.UUID) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteCompany", ctx, id)
+	ret := m.ctrl.Call(m, "DeleteCompany", id)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteCompany indicates an expected call of DeleteCompany.
-func (mr *MockServiceMockRecorder) DeleteCompany(ctx, id interface{}) *gomock.Call {
+func (mr *MockServiceMockRecorder) DeleteCompany(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCompany", reflect.TypeOf((*MockService)(nil).DeleteCompany), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCompany", reflect.TypeOf((*MockService)(nil).DeleteCompany), id)
 }
 
 // GetCompanyByID mocks base method.
-func (m *MockService) GetCompanyByID(ctx context.Context, id uuid.UUID) (*model.Company, error) {
+func (m *MockService) GetCompanyByID(id uuid.UUID) (*model.Company, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCompanyByID", ctx, id)
+	ret := m.ctrl.Call(m, "GetCompanyByID", id)
 	ret0, _ := ret[0].(*model.Company)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetCompanyByID indicates an expected call of GetCompanyByID.
-func (mr *MockServiceMockRecorder) GetCompanyByID(ctx, id interface{}) *gomock.Call {
+func (mr *MockServiceMockRecorder) GetCompanyByID(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCompanyByID", reflect.TypeOf((*MockService)(nil).GetCompanyByID), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCompanyByID", reflect.TypeOf((*MockService)(nil).GetCompanyByID), id)
 }
 
 // UpdateCompany mocks base method.
-func (m *MockService) UpdateCompany(ctx context.Context, id uuid.UUID, forUpdateCompany *model.Company) (*model.Company, error) {
+func (m *MockService) UpdateCompany(id uuid.UUID, forUpdateCompany *model.Company) (*model.Company, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateCompany", ctx, id, forUpdateCompany)
+	ret := m.ctrl.Call(m, "UpdateCompany", id, forUpdateCompany)
 	ret0, _ := ret[0].(*model.Company)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateCompany indicates an expected call of UpdateCompany.
-func (mr *MockServiceMockRecorder) UpdateCompany(ctx, id, forUpdateCompany interface{}) *gomock.Call {
+func (mr *MockServiceMockRecorder) UpdateCompany(id, forUpdateCompany interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCompany", reflect.TypeOf((*MockService)(nil).UpdateCompany), ctx, id, forUpdateCompany)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCompany", reflect.TypeOf((*MockService)(nil).UpdateCompany), id, forUpdateCompany)
 }
