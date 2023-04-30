@@ -1,8 +1,11 @@
 package auth
 
 import (
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/ngereci/xm_interview/env"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -31,12 +34,12 @@ func (a *Controller) Login(c *gin.Context) {
 		return
 	}
 
-	if authenticate(request) {
+	if !a.authenticate(request) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		return
 	}
 
-	tokenString, err := createToken(request.Username)
+	tokenString, err := a.createToken(request.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create token"})
 		return
@@ -50,17 +53,17 @@ func (a *Controller) Login(c *gin.Context) {
 }
 
 // CreateToken generates a JWT token for the given username
-func createToken(username string) (string, error) {
+func (a *Controller) createToken(username string) (string, error) {
 	claims := jwt.MapClaims{
 		"username": username,
-		"exp":      viper.GetString("jwt.expireTime"),
+		"exp":      viper.GetString(env.COMPANY_JWT_EXPIRE_TIME),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(viper.GetString("jwt.secretKey")))
+	return token.SignedString([]byte(viper.GetString(env.COMPANY_JWT_SECRET_KEY)))
 }
 
-func authenticate(request LoginRequest) bool {
+func (a *Controller) authenticate(request LoginRequest) bool {
 	// TODO
 	// In a real application, the username and password would be validated
 	// against a database of users. For simplicity, we will just use a hardcoded
@@ -72,6 +75,12 @@ func authenticate(request LoginRequest) bool {
 	if request.Username != validUsername {
 		return false
 	}
-	err := bcrypt.CompareHashAndPassword([]byte(validPassword), []byte(request.Password))
+	validPasswordHash, err := bcrypt.GenerateFromPassword([]byte(validPassword), 0)
+	if err != nil {
+		log.Errorf("unable to generate password hash, error: %v", err)
+		return false
+	}
+	err = bcrypt.CompareHashAndPassword(validPasswordHash, []byte(request.Password))
+	fmt.Print(err)
 	return err == nil
 }

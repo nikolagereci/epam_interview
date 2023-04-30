@@ -3,37 +3,43 @@ package company
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/ngereci/xm_interview/model"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
-type Controller struct {
+type Controller interface {
+	CreateCompany(ctx *gin.Context)
+	GetCompany(ctx *gin.Context)
+	UpdateCompany(ctx *gin.Context)
+	DeleteCompany(ctx *gin.Context)
+}
+
+type controller struct {
 	service Service
 }
 
-func NewController(service Service) *Controller {
-	return &Controller{service: service}
+func NewController(service Service) Controller {
+	return &controller{service: service}
 }
 
-func (c *Controller) CreateCompany(ctx *gin.Context) {
-	var company Company
+func (c *controller) CreateCompany(ctx *gin.Context) {
+	var company model.Company
 
 	if err := ctx.ShouldBindJSON(&company); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	createdCompany, err := c.service.CreateCompany(ctx.Request.Context(), &company)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
 	ctx.JSON(http.StatusCreated, createdCompany)
 }
 
-func (c *Controller) GetCompany(ctx *gin.Context) {
+func (c *controller) GetCompany(ctx *gin.Context) {
 	companyUuid, err := processUuid(ctx)
 	if err != nil {
 		return
@@ -53,17 +59,16 @@ func (c *Controller) GetCompany(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, company)
 }
 
-func (c *Controller) UpdateCompany(ctx *gin.Context) {
+func (c *controller) UpdateCompany(ctx *gin.Context) {
 	companyUuid, err := processUuid(ctx)
 	if err != nil {
 		return
 	}
-	var company Company
+	var company model.Company
 	if err := ctx.ShouldBindJSON(&company); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	updatedCompany, err := c.service.UpdateCompany(ctx.Request.Context(), *companyUuid, &company)
 
 	if err != nil {
@@ -79,7 +84,7 @@ func (c *Controller) UpdateCompany(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, updatedCompany)
 }
 
-func (c *Controller) DeleteCompany(ctx *gin.Context) {
+func (c *controller) DeleteCompany(ctx *gin.Context) {
 	companyUuid, err := processUuid(ctx)
 	if err != nil {
 		return
