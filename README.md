@@ -44,10 +44,15 @@ make run
 This command will start the application and its dependencies using Docker Compose.
 
 ```shell
-make test
+make unit-test
 ```
 
-This command will run all the tests in the `./...` directory and output the results.
+This command will run all the unit tests and output the results.
+```shell
+make integration-test
+```
+
+This command will run all the integration tests and output the results.
 ```shell
 make genmocks
 ```
@@ -64,10 +69,15 @@ Here's an example of how these commands could be used in a CI/CD pipeline:
 ```shell
 make lint
 ```
-2. **Run tests**: The next step is to run the unit tests to ensure that the application is working as expected. This can be done using the `test` command.
+2. **Run tests**: The next step is to run the unit tests to ensure that the application is working as expected. This can be done using the `unit-test` command.
 
 ```shell
-make test
+make unit-test
+```
+3. **Run integration tests**: The next step is to run the integration tests to ensure that the application is working as expected. This can be done using the `integration-test` command.
+
+```shell
+make integration-test
 ```
 
 3. **Build the application**: The first step is to build the application using the `build` command. This command compiles the code and generates an executable file that can be run on any machine.

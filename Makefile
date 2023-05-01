@@ -8,7 +8,11 @@ lint:
 	golangci-lint run -c golangci.yaml
 run: build
 	sudo docker-compose up --remove-orphans
-test:
+unit-test:
 	go test ./... -count=1
+integration-test: build
+	sudo docker-compose up -d --remove-orphans cassandra cassandra-load-keyspace zookeeper broker
+	go test ./... -count=1 -tags=integration
+	sudo docker-compose down
 genmocks:
 	sh mocks/generate.sh
